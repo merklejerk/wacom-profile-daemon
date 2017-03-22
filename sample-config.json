@@ -1,0 +1,51 @@
+{
+	"Wacom Intuos S 2": {
+
+		"default": {
+			"mapping": 0,
+			"stylus": [
+				"Button 1 1",
+				"Button 2 2",
+				"Button 3 3"
+			]
+		},
+
+		"krita": {
+			"window-class": "krita",
+			"mapping": "window",
+			"pad": [
+				"Button 9 'key ]'",
+				"Button 8 'key ['",
+				"Button 3 'key +'",
+				"Button 1 'key -'"
+			]
+		}
+	},
+
+	"Wacom Cintiq 13HD": {
+
+		"default": {
+			"mapping": 0,
+			"stylus": [
+				"Button 1 1",
+				"Button 2 a",
+				"Button 3 3"
+			],
+			"eraser": [
+				"Button 1 1"
+			]
+		},
+
+		"krita": {
+			"window-class": "krita",
+			"pad": [
+				"Button 1 'key ctrl z",
+				"Button 2 'key ['",
+				"Button 3 'key ]'",
+				"Button 4 'key -'",
+				"Button 5 'key +'",
+				"Button 6 'key e'"
+			]
+		}
+	}
+}
