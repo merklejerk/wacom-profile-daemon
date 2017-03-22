@@ -17,6 +17,7 @@ If you've saved the script on your `PATH`, it's as simple as:
 ```
 wacom-profile-daemon.py --daemon path-to-config-file
 ```
+You can pass the `--debug` flag for more output.
 
 # The Configuration File
 The configuration file defines the rules and settings the daemon will follow. It is in 
