@@ -7,8 +7,8 @@ specified in a configuration file. It supports configurations for multiple table
 
 # Installation
 All you need is a copy of the `wacom-profile-daemon.py` file. Put it anywhere you like and make it executable.
-The script requires python3 and [xsetwacom](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration) 
-(libwacom) to be installed to your environment.
+The script requires python3 and [`xsetwacom`](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration) 
+(libwacom) to be installed to your environment. It will help to familiarize yourself with the [`xsetwacom`](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration) command when creating a configuration.
 
 A sample configuration file (`sample-config.json`) is also provided.
 
@@ -83,7 +83,7 @@ rundown of settings and syntax.
 
 As an example, here is a full configuration for a Wacom Intuos S 2 device that maps the tablet to the
 first active display and binds button 2 on the pad
-to undo (`ctrl+z`) by default, but binds button 2  to the key `e` when in a window whose title ends with 
+to undo (`ctrl+z`) by default, but binds button 2  to the key `e` when a window whose title ends with 
 "MyPaint" comes into focus.
 
 ```
