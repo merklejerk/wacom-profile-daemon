@@ -1,5 +1,5 @@
 # wacom-profile-daemon
-A tool for automatically switching graphics tablet options and area mapping based on the active window. 
+A tool for automatically switching graphics tablet options and area mapping based on the active window for X Desktops.
 
 # Overview
 This simple script runs in the background and applies custom tablet settings depending on the rules
