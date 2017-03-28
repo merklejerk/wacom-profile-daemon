@@ -186,9 +186,10 @@ class XUtil:
 	@staticmethod
 	def get_window_classes( window_id ):
 		output = run( r'xprop -id %s WM_CLASS' % window_id )
-		mo = re.match( r'[^=]+=\s+(.+)$', output )
-		if mo:
-			return [cls.strip( '"' ) for cls in mo.group( 1 ).split( ', ' )]
+		if output != False:
+			mo = re.match( r'[^=]+=\s+(.+)$', output )
+			if mo:
+				return [cls.strip( '"' ) for cls in mo.group( 1 ).split( ', ' )]
 		return []
 
 	@staticmethod
