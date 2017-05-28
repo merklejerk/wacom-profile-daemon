@@ -7,8 +7,8 @@ specified in a configuration file. It supports configurations for multiple table
 
 # Installation
 All you need is a copy of the `wacom-profile-daemon.py` file. Put it anywhere you like and make it executable.
-The script requires python3 and [`xsetwacom`](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration) 
-(libwacom) to be installed to your environment. It will help to familiarize yourself with the [`xsetwacom`](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration) command when creating a configuration.
+The script requires python3, `xprop` (xorg-apps), and [`xsetwacom`](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration) 
+(xf86-input-wacom) to be installed to your environment. It will help to familiarize yourself with the [`xsetwacom`](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration) command when creating a configuration.
 
 A sample configuration file (`sample-config.json`) is also provided.
 
