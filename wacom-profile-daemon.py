@@ -95,7 +95,7 @@ class Bounds:
 	def from_geometry_str( cls, geom_str ):
 		mo = re.match( r'(\d+)x(\d+)\+(-?\d+)\+(-?\d+)', geom_str )
 		nums = [int( i ) for i in mo.groups( ) ]
-		return cls( nums[2], nums[3], nums[0], nums[1] )
+		return cls( nums[2], nums[3], nums[0]+nums[2], nums[1]+nums[3] )
 
 	def __str__( self ):
 		return self.geometry_str
@@ -156,7 +156,7 @@ class Wacom:
 		devices = set( )
 		for line in run( r'xsetwacom --list devices', lines=True ):
 			mo = re.match(
-				r'(.*\b)\s+id:\s+(\d+)\s+type:\s+(PAD|STYLUS|ERASER)\s*$',
+				r'(.*\b)\s+id:\s+(\d+)\s+type:\s+(PAD|STYLUS|ERASER|TOUCH)\s*$',
 				line )
 			if mo != None:
 				devices.add( (mo.group( 2 ), mo.group( 1 ), mo.group( 3 )) )
@@ -249,7 +249,7 @@ class XUtil:
 	def get_display_bounds( display_id ):
 		for line in run( "xrandr", lines=True ):
 			mo = re.match(
-				r'%s\s+connected\s+\w+\s+([\d+-x]+)' % display_id, line )
+				r'%s\s+connected\s+(?:\w+\s+)?([\d+-x]+)' % display_id, line )
 			if mo != None:
 				return Bounds.from_geometry_str( mo.group( 1 ) )
 		return None
@@ -371,7 +371,8 @@ class Daemon:
 		opt_targets = (
 			('pad','PAD'),
 			('stylus','STYLUS'),
-			('eraser','ERASER') )
+			('eraser','ERASER'),
+			('touch','TOUCH') )
 		for opt_key, dev_type in opt_targets:
 			if opt_key in rule:
 				self._apply_options( rule[opt_key],
