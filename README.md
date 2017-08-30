@@ -74,8 +74,7 @@ Pen-displays will find window/app mapping less meaningful as they're designed to
 * A value of `"app"` will remap the tablet to the combined area of the active window and its children.
 This is what most people will want.
 * A value of `"window"` will remap the tablet to the active window. Your pen will only be able to
-move within the window, potentially giving you more tablet resolution to work with. Note that this will
-also restrict the pen area to within dialog windows.
+move within the window. Note that this will also restrict the pen area to within dialog windows.
 * An identifier (such as `"HDMI-0"`, or `"DP-1"`) will remap the tablet to the
 display that identifier belongs to. You can find the identifiers for all your displays with the `xrandr`
 tool.  
