@@ -88,10 +88,10 @@ device/component with `xsetwacom -s get DEVICE-ID-OR-NAME all`. Take a look at t
 [xsetwacom wiki](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration) for a detailed
 rundown of settings and syntax.
 
-As an example, here is a full configuration for a Wacom Intuos S 2 device that maps the tablet to the
-first active display and binds button 2 on the pad
-to undo (`ctrl+z`) by default, but binds button 2  to the key `e` when a window whose title ends with
-"MyPaint" comes into focus.
+As an example, here is a full configuration for a Wacom Intuos S 2 device that fully maps the tablet to the
+first active display and binds button 2 on the pad to undo (`ctrl+z`).
+But when a window whose title ends with "MyPaint" comes into focus, it maps the tablet
+area to that app and binds button 2 to the key `e`.
 
 ```
 {
@@ -104,6 +104,7 @@ to undo (`ctrl+z`) by default, but binds button 2  to the key `e` when a window 
     },
     "mypaint-rule": {
       "window-title": "\bMyPaint$",
+		"mapping": "app",
       "pad": [
         "Button 2 'key e'"
       ]

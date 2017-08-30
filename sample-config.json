@@ -12,7 +12,7 @@
 
 		"krita": {
 			"window-class": "krita",
-			"mapping": "window",
+			"mapping": "app",
 			"pad": [
 				"Button 9 'key ]'",
 				"Button 8 'key ['",
