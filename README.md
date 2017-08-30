@@ -5,10 +5,14 @@ A tool for automatically switching graphics tablet options and area mapping base
 This simple script runs in the background and applies custom tablet settings depending on the rules
 specified in a configuration file. It supports configurations for multiple tablet devices at once.
 
+# Requirements
+xorg-utils, xf86-wacom-input, libwacom.
+
 # Installation
 All you need is a copy of the `wacom-profile-daemon.py` file. Put it anywhere you like and make it executable.
-The script requires python3, `xprop`, `xwininfo` (xorg-apps), and [`xsetwacom`](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration)
-(xf86-input-wacom) to be installed to your environment. It will help to familiarize yourself with the [`xsetwacom`](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration) command when creating a configuration.
+It will help to familiarize yourself with the
+[`xsetwacom`](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration)
+command when creating a configuration.
 
 A sample configuration file (`sample-config.json`) is also provided.
 
@@ -35,11 +39,10 @@ The general hierarchy follows. Note that it is in an abbreviated format.
     "window-title"?: "regular expression",
     "window-class"?: "class name",
     "window-id"?: "window id",
-    "mapping"?: "window"|"monitor index"|"monitor id",
+    "mapping"?: "app"|"window"|MONITOR_INDEX|MONITOR_ID,
     "pad"?: [ "option command"* ],
     "stylus"?: [ "option command"* ],
-    "eraser"?: [ "option command"* ],
-    "touch"?: [ "option command"* ]
+    "eraser"?: [ "option command"* ]
 ```
 
 The configuration is first divided into rulesets whose keys are device prefixes. A ruleset with a key of
@@ -63,20 +66,24 @@ Multiple rules may be applied at a time. Rules are applied from least specific t
 The `xprop WM_NAME` or `xprop WM_CLASS` commands are useful in determining the exact title
 or classs of a window.
 
-The `"mapping"` option remaps the area of the tablet to either an entire display or a window. Aspect-ratio
-will be maintained while utilizing as much of your tablet as possible. This option
-is obviously not recommended for Cintiq and other pen-display devices.
+The `"mapping"` option remaps the area of the tablet to either an entire display or a window/app.
+Restricting the mapping to a window/app can give you more resolution when working within that window/app.
+Aspect-ratio will be maintained while utilizing as much of your tablet as possible.
+Pen-displays will find window/app mapping less meaningful as they're designed to map 1:1 to a display.
 
+* A value of `"app"` will remap the tablet to the combined area of the active window and its children.
+This is what most people will want.
 * A value of `"window"` will remap the tablet to the active window. Your pen will only be able to
-move within the window, potentially giving you more tablet resolution to work with.
+move within the window, potentially giving you more tablet resolution to work with. Note that this will
+also restrict the pen area to within dialog windows.
 * An identifier (such as `"HDMI-0"`, or `"DP-1"`) will remap the tablet to the
 display that identifier belongs to. You can find the identifiers for all your displays with the `xrandr`
 tool.  
 * A number will be treated as an index to a connected display as outputed by `xrandr`. Hence, `0` will
   be the first connected display, `1` will be the second, and so on.
 
-The `"pad"`, `"stylus"`, `"eraser"`, and `"touch"` lists allow you to specify settings to apply to pad, stylus,
-eraser, and touch devices, respectively. Each string is passed directly to `xsetwacom` like
+The `"pad"`, `"stylus"`. and `"eraser"` lists allow you to specify settings to apply to pad, stylus,
+and eraser devices, respectively. Each string is passed directly to `xsetwacom` like
 `xsetwacom set DEVICE-ID YOUR-STRING-HERE`. You can get a full list of settings available for a particular
 device/component with `xsetwacom -s get DEVICE-ID-OR-NAME all`. Take a look at the
 [xsetwacom wiki](http://linuxwacom.sourceforge.net/wiki/index.php/Tablet_Configuration) for a detailed

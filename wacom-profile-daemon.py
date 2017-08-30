@@ -76,7 +76,9 @@ class Bounds:
 
 	@property
 	def aspect( self ):
-		return self.width / float( self.height )
+		if self.height != 0:
+			return self.width / float( self.height )
+		return 1.0
 
 	@property
 	def values( self ):
@@ -90,6 +92,22 @@ class Bounds:
 		return '%dx%d+%d+%d' % \
 			(math.ceil( self.width ), math.ceil( self.height),
 				math.floor( self.min_x ), math.floor( self.min_y ))
+
+	def union( self, other ):
+		if self.width != 0:
+			self.min_x = min(self.min_x, other.min_x)
+			self.max_x = max(self.max_x, other.max_x)
+		else:
+			self.min_x = other.min_x
+			self.max_x = other.max_x
+
+		if self.height != 0:
+			self.min_y = min(self.min_y, other.min_y)
+			self.max_y = max(self.max_y, other.max_y)
+		else:
+			self.min_y = other.min_y
+			self.max_y = other.max_y
+		return self
 
 	@classmethod
 	def from_geometry_str( cls, geom_str ):
@@ -195,7 +213,7 @@ class XUtil:
 	@staticmethod
 	def get_window_name( window_id ):
 		output = run( r'xprop -id %s WM_NAME' % window_id )
-		mo = re.search( r'=\s+"(.*)"\s*$', output )
+		mo = re.search( r'=\s+"(0x.*)"\s*$', output )
 		if mo:
 			return mo.group( 1 )
 		return ""
@@ -204,6 +222,22 @@ class XUtil:
 	def get_active_window_id( ):
 		output = run( r'xprop -root _NET_ACTIVE_WINDOW' )
 		return re.search( r': window id # (.*)\s*$', output ).group( 1 )
+
+	@staticmethod
+	def get_window_parent_id( child_window_id, max_depth=100 ):
+		# Keep going up the tree until we're not a transient window.
+		for i in range(max_depth):
+			output = run( r'xprop -id %s WM_TRANSIENT_FOR' % child_window_id )
+			mo = re.search( r'#\s+(0x\S+)\s*$', output )
+			if mo:
+				child_window_id = mo.group( 1 )
+			else:
+				break
+		return child_window_id
+
+	@staticmethod
+	def does_window_belong_to( window_id, parent_id ):
+		return XUtil.get_window_parent_id( window_id ) == parent_id
 
 	@staticmethod
 	def get_window_bounds( window_id, include_frame=False ):
@@ -234,6 +268,21 @@ class XUtil:
 			if mo:
 				bounds.min_y -= int( mo.group( 1 ) )
 		return bounds
+
+	@staticmethod
+	def get_app_bounds( parent_id, include_frame=False ):
+		wids = XUtil.get_app_windows( parent_id )
+		app_bounds = Bounds( )
+		for wid in wids:
+			bounds = XUtil.get_window_bounds( wid, include_frame )
+			app_bounds.union( bounds )
+		print(app_bounds)
+		return app_bounds
+
+	@staticmethod
+	def get_app_windows( parent_id ):
+		wids = XUtil.get_all_windows_ids()
+		return [wid for wid in wids if XUtil.does_window_belong_to( wid, parent_id )]
 
 	@staticmethod
 	def get_active_display_by_index( idx ):
@@ -350,10 +399,23 @@ class Daemon:
 			if len( matching_devices ) > 0:
 				self._debug_print( 'Using ruleset "%s".' % device_prefix )
 				ruleset = self._order_ruleset( self.config[device_prefix] )
-				for rule_name, rule in ruleset:
-					if self._is_rule_active( rule ):
-						self._debug_print( 'Applying rule "%s".' % rule_name )
-						self._apply_rule( rule, matching_devices )
+				merged = self._create_merged_rule( ruleset )
+				# Apply them.
+				self._apply_rule( merged, matching_devices )
+
+	# Ruleset should be sorted from least to most specific.
+	def _create_merged_rule( self, ruleset ):
+		merged = {}
+		for rule_name, rule in ruleset:
+			if self._is_rule_active( rule ):
+				self._debug_print( 'Merging rule "%s".' % rule_name )
+				self._merge_rule( merged, rule )
+		return merged
+
+	def _merge_rule( self, dst, new ):
+		for k in new:
+			dst[k] = new[k];
+		return dst
 
 	def _get_matching_devices( self, prefix ):
 		return [dev for dev in self._devices.values( ) if
@@ -407,7 +469,14 @@ class Daemon:
 						% (opt,dev.name) )
 
 	def _get_mapping_output_area( self, mapping_type ):
-		if mapping_type == 'window':
+		if mapping_type == 'app':
+			# Map to the combined area of all the app windows.
+			if self._active_window != None:
+				parent_id = XUtil.get_window_parent_id(
+					self._active_window, max_depth=4 )
+				return XUtil.get_app_bounds(parent_id, include_frame=True)
+		elif mapping_type == 'window':
+			# Map to active window.
 			if self._active_window != None:
 				return XUtil.get_window_bounds( self._active_window,
 					include_frame=True )
