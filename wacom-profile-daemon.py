@@ -276,7 +276,6 @@ class XUtil:
 		for wid in wids:
 			bounds = XUtil.get_window_bounds( wid, include_frame )
 			app_bounds.union( bounds )
-		print(app_bounds)
 		return app_bounds
 
 	@staticmethod
