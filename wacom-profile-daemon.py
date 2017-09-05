@@ -221,18 +221,21 @@ class XUtil:
 	@staticmethod
 	def get_active_window_id( ):
 		output = run( r'xprop -root _NET_ACTIVE_WINDOW' )
-		return re.search( r': window id # (.*)\s*$', output ).group( 1 )
+		if output:
+			return re.search( r': window id # (.*)\s*$', output ).group( 1 )
+		return None
 
 	@staticmethod
 	def get_window_parent_id( child_window_id, max_depth=100 ):
 		# Keep going up the tree until we're not a transient window.
 		for i in range(max_depth):
 			output = run( r'xprop -id %s WM_TRANSIENT_FOR' % child_window_id )
-			mo = re.search( r'#\s+(0x\S+)\s*$', output )
-			if mo:
-				child_window_id = mo.group( 1 )
-			else:
-				break
+			if output:
+				mo = re.search( r'#\s+(0x\S+)\s*$', output )
+				if mo:
+					child_window_id = mo.group( 1 )
+				else:
+					break
 		return child_window_id
 
 	@staticmethod
