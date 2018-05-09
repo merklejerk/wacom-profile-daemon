@@ -6,7 +6,7 @@ This simple script runs in the background and applies custom tablet settings dep
 specified in a configuration file. It supports configurations for multiple tablet devices at once.
 
 # Requirements
-xorg-utils, xf86-wacom-input, libwacom.
+xorg-apps (xwininfo, xrandr, xprop), xf86-wacom-input, libwacom.
 
 # Installation
 All you need is a copy of the `wacom-profile-daemon.py` file. Put it anywhere you like and make it executable.
