@@ -28,7 +28,7 @@ The configuration file defines the rules and settings the daemon will follow. It
 [JSON](http://beginnersbook.com/2015/04/json-tutorial/) format.
 
 I recommend taking a look at the
-[sample configuration file](https://github.com/cluracan/wacom-profile-daemon/blob/master/sample-config.json)
+[sample configuration file](https://github.com/merklejerk/wacom-profile-daemon/blob/master/sample-config.json)
 provided first.
 
 
